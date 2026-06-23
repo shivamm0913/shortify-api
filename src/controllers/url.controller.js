@@ -16,7 +16,8 @@ const createUrl = asyncHandler(async (req, res) => {
 
 const getAllUrls = asyncHandler(async (req, res) => {
   const userId = req.user.userId;
-  const result = await urlService.getUrls(userId);
+  const { page = 1, limit = 10 } = req.query;
+  const result = await urlService.getUrls(userId, Number(page), Number(limit));
 
   return res.status(200).json(result);
 });

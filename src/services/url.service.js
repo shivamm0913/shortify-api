@@ -53,15 +53,31 @@ async function createShortUrl(originalUrl, customAlias, expiresAt, userId) {
   };
 }
 
-async function getUrls(userId) {
-  const data = await prisma.url.findMany({
+async function getUrls(userId, page, limit) {
+  const skip = (page - 1) * limit;
+  const total = await prisma.url.count({
     where: {
       userId,
     },
   });
+  const data = await prisma.url.findMany({
+    where: {
+      userId,
+    },
+    skip,
+    take: limit,
+  });
+
+  const totalPages = Math.ceil(total / limit);
 
   return {
     data,
+    pagination: {
+      page,
+      limit,
+      total,
+      totalPages,
+    },
   };
 }
 
