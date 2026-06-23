@@ -1,6 +1,6 @@
 # Shortify API
 
-A production-ready URL shortening service built with Node.js, Express, PostgreSQL and Prisma.
+A production-ready URL shortening API built with Node.js, Express, PostgreSQL and Prisma.
 
 ## Features
 
