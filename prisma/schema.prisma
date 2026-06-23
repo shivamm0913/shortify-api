@@ -27,5 +27,16 @@ model Url {
   expiresAt   DateTime?
 
   userId      String?
-  user        User?    @relation(fields: [userId], references: [id])
+  user        User? @relation(fields: [userId], references: [id])
+
+  visits      UrlVisit[]
+}
+
+
+model UrlVisit {
+  id        String   @id @default(uuid())
+  visitedAt DateTime @default(now())
+
+  urlId     String
+  url       Url @relation(fields: [urlId], references: [id])
 }

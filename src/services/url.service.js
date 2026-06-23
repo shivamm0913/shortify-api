@@ -94,6 +94,14 @@ async function getUrlStats(shortCode, userId) {
       shortCode,
       userId,
     },
+    include: {
+      visits: {
+        orderBy: {
+          visitedAt: "desc",
+        },
+        take: 10,
+      },
+    },
   });
   if (!url) {
     throw new NotFoundError("Url Not Found");
@@ -105,20 +113,38 @@ async function getUrlStats(shortCode, userId) {
     clickCount: url.clickCount,
     createdAt: url.createdAt,
     expiresAt: url.expiresAt,
+    recentVisits: url.visits,
   };
 }
 
 async function incrementClickCount(shortCode) {
-  await prisma.url.update({
+  const url = await prisma.url.findUnique({
     where: {
       shortCode,
     },
-    data: {
-      clickCount: {
-        increment: 1,
-      },
-    },
   });
+
+  if (!url) {
+    throw new NotFoundError("Url Not Found");
+  }
+  await prisma.$transaction([
+    prisma.urlVisit.create({
+      data: {
+        urlId: url.id,
+      },
+    }),
+
+    prisma.url.update({
+      where: {
+        shortCode,
+      },
+      data: {
+        clickCount: {
+          increment: 1,
+        },
+      },
+    }),
+  ]);
 }
 
 async function deleteUrl(shortCode, userId) {
