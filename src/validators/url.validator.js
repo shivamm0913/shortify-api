@@ -17,6 +17,28 @@ const createUrlSchema = z.object({
   expiresAt: z.string().datetime().optional(),
 });
 
+const updateUrlSchema = z
+  .object({
+    originalUrl: z.string().url().optional(),
+
+    customAlias: z
+      .string()
+      .min(3, "Alias must be atleast 3 characters")
+      .optional(),
+
+    expiresAt: z.string().datetime().optional(),
+  })
+  .refine(
+    (data) =>
+      data.originalUrl !== undefined ||
+      data.customAlias !== undefined ||
+      data.expiresAt !== undefined,
+    {
+      message: "Atleast one field must be provided",
+    },
+  );
+
 module.exports = {
   createUrlSchema,
+  updateUrlSchema,
 };

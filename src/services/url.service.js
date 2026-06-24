@@ -1,7 +1,6 @@
 const ConflictError = require("../errors/conflictError");
 const GoneError = require("../errors/GoneError");
 const NotFoundError = require("../errors/NotFoundError");
-const UnauthorizedError = require("../errors/UnauthorizedError");
 const prisma = require("../prisma/client");
 
 const RESERVED_ALIASES = ["admin", "api", "urls", "login", "stats"];
@@ -182,6 +181,66 @@ async function deleteUrl(shortCode, userId) {
   });
 }
 
+async function updateUrl(shortCode, userId, updateData) {
+  const url = await prisma.url.findFirst({
+    where: {
+      shortCode,
+      userId,
+    },
+  });
+
+  if (!url) {
+    throw new NotFoundError("Url not found");
+  }
+
+  const { originalUrl, customAlias, expiresAt } = updateData;
+
+  const data = {};
+
+  if (originalUrl) {
+    data.originalUrl = originalUrl;
+  }
+
+  if (customAlias) {
+    if (RESERVED_ALIASES.includes(customAlias.toLowerCase())) {
+      throw new ConflictError("Alias is reserved");
+    }
+    const existingUrl = await prisma.url.findUnique({
+      where: {
+        shortCode: customAlias,
+      },
+    });
+    if (existingUrl && existingUrl.id !== url.id) {
+      throw new ConflictError("Alias already exists");
+    }
+
+    data.shortCode = customAlias;
+  }
+
+  if (expiresAt) {
+    if (expiresAt && new Date(expiresAt) <= new Date()) {
+      throw new ConflictError("Expiration date must be in the future");
+    }
+    data.expiresAt = expiresAt;
+  }
+
+  const updatedUrl = await prisma.url.update({
+    where: {
+      id: url.id,
+    },
+    data,
+  });
+
+  return {
+    id: updatedUrl.id,
+    originalUrl: updatedUrl.originalUrl,
+    shortCode: updatedUrl.shortCode,
+    clickCount: updatedUrl.clickCount,
+    createdAt: updatedUrl.createdAt,
+    expiresAt: updatedUrl.expiresAt,
+  };
+}
+
 module.exports = {
   createShortUrl,
   getUrls,
@@ -189,4 +248,5 @@ module.exports = {
   incrementClickCount,
   deleteUrl,
   getUrlStats,
+  updateUrl,
 };

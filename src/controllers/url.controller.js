@@ -60,10 +60,20 @@ const getUrlStats = asyncHandler(async (req, res) => {
   return res.status(200).json(result);
 });
 
+const updateUrl = asyncHandler(async (req, res) => {
+  const { shortCode } = req.params;
+  const userId = req.user.userId;
+
+  const result = await urlService.updateUrl(shortCode, userId, req.body);
+
+  return res.status(200).json(result);
+});
+
 module.exports = {
   createUrl,
   getAllUrls,
   redirectUrl,
   getUrlStats,
   deleteUrl,
+  updateUrl,
 };
