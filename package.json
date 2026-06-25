@@ -17,6 +17,7 @@
     "express-rate-limit": "^8.5.2",
     "jsonwebtoken": "^9.0.3",
     "prisma": "^6.19.3",
+    "qrcode": "^1.5.4",
     "zod": "^4.4.3"
   }
 }

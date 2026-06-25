@@ -69,6 +69,14 @@ const updateUrl = asyncHandler(async (req, res) => {
   return res.status(200).json(result);
 });
 
+const generateQRCode = asyncHandler(async (req, res) => {
+  const { shortCode } = req.params;
+  const userId = req.user.userId;
+  const buffer = await urlService.generateQRCode(shortCode, userId);
+
+  return res.type("image/png").send(buffer);
+});
+
 module.exports = {
   createUrl,
   getAllUrls,
@@ -76,4 +84,5 @@ module.exports = {
   getUrlStats,
   deleteUrl,
   updateUrl,
+  generateQRCode,
 };

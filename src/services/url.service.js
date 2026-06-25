@@ -2,6 +2,7 @@ const ConflictError = require("../errors/conflictError");
 const GoneError = require("../errors/GoneError");
 const NotFoundError = require("../errors/NotFoundError");
 const prisma = require("../prisma/client");
+const QRCode = require("qrcode");
 
 const RESERVED_ALIASES = ["admin", "api", "urls", "login", "stats"];
 
@@ -241,6 +242,24 @@ async function updateUrl(shortCode, userId, updateData) {
   };
 }
 
+async function generateQRCode(shortCode, userId) {
+  const url = await prisma.url.findFirst({
+    where: {
+      shortCode,
+      userId,
+    },
+  });
+
+  if (!url) {
+    throw new NotFoundError("Url not found");
+  }
+
+  const shortUrl = `${process.env.BASE_URL}/${url.shortCode}`;
+  const qrBuffer = await QRCode.toBuffer(shortUrl);
+
+  return qrBuffer;
+}
+
 module.exports = {
   createShortUrl,
   getUrls,
@@ -249,4 +268,5 @@ module.exports = {
   deleteUrl,
   getUrlStats,
   updateUrl,
+  generateQRCode,
 };

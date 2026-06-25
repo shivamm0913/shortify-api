@@ -7,6 +7,7 @@ const {
   getAllUrls,
   getUrlStats,
   updateUrl,
+  generateQRCode,
 } = require("../controllers/url.controller");
 const validate = require("../middlewares/validate.middleware");
 const {
@@ -35,5 +36,6 @@ router.patch(
   validate(updateUrlSchema),
   updateUrl,
 );
+router.get("/:shortCode/qr", authMiddleware, generateQRCode);
 
 module.exports = router;
