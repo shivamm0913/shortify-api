@@ -7,10 +7,19 @@ const {
   authMe,
 } = require("../controllers/auth.controller");
 const authMiddleware = require("../middlewares/auth.middleware");
+const {
+  registerLimiter,
+  loginLimiter,
+} = require("../middlewares/rateLimit.middleware");
 
 const router = express.Router();
 
-router.post("/register", validate(registerSchema), registerUser);
-router.post("/login", validate(loginSchema), loginUser);
+router.post(
+  "/register",
+  registerLimiter,
+  validate(registerSchema),
+  registerUser,
+);
+router.post("/login", loginLimiter, validate(loginSchema), loginUser);
 router.get("/me", authMiddleware, authMe);
 module.exports = router;
