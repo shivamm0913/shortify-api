@@ -175,11 +175,19 @@ async function deleteUrl(shortCode, userId) {
     throw new NotFoundError("Url Not found");
   }
 
-  await prisma.url.delete({
-    where: {
-      id: url.id,
-    },
-  });
+  await prisma.$transaction([
+    prisma.urlVisit.deleteMany({
+      where: {
+        urlId: url.id,
+      },
+    }),
+
+    prisma.url.delete({
+      where: {
+        id: url.id,
+      },
+    }),
+  ]);
 }
 
 async function updateUrl(shortCode, userId, updateData) {
