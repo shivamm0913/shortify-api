@@ -17,6 +17,15 @@ A production-ready **URL Shortener REST API** built with **Node.js**, **Express.
 Shortify enables authenticated users to create, manage, and analyze shortened URLs with features like **JWT Authentication**, **Custom Aliases**, **QR Code Generation**, **Click Analytics**, **URL Expiration**, and **Swagger API Documentation**.
 
 ---
+## 🌐 Live Demo
+
+API:
+https://your-render-url.onrender.com
+
+Swagger:
+https://your-render-url.onrender.com/api-docs
+
+---
 
 # 📑 Table of Contents
 
@@ -187,7 +196,7 @@ This starts:
 Swagger UI is available at:
 
 ```text
-http://localhost:3000/api-docs
+https://your-render-url.onrender.com/api-docs
 ```
 
 Swagger provides:
