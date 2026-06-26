@@ -20,10 +20,10 @@ Shortify enables authenticated users to create, manage, and analyze shortened UR
 ## 🌐 Live Demo
 
 API:
-https://your-render-url.onrender.com
+https://shortify-api-eoki.onrender.com/
 
 Swagger:
-https://your-render-url.onrender.com/api-docs
+https://shortify-api-eoki.onrender.com/api-docs/
 
 ---
 
@@ -196,7 +196,7 @@ This starts:
 Swagger UI is available at:
 
 ```text
-https://your-render-url.onrender.com/api-docs
+https://shortify-api-eoki.onrender.com/api-docs/
 ```
 
 Swagger provides:
